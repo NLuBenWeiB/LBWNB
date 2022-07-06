@@ -12,6 +12,7 @@
             ],
             "cStandard": "c89",
             "cppStandard": "c++20",
+            "compilerPath": "C:\\Program Files\\Dev-Cpp\\MinGW64\\bin\\g++.exe",
             "intelliSenseMode": "windows-gcc-x86"
         }
     ],
