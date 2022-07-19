@@ -3,7 +3,7 @@
 using namespace std;
 #define ll long long
 int read(){
-    ll x=0,f=1;
+    int x=0,f=1;
     char c=getchar();
     while (c<'0'||c>'9')
     {
