@@ -11,10 +11,10 @@ struct node
     bool operator>(const node &a)
         const { return dis > a.dis; }
 };
-vector<edge> e[maxn];
-int dis[maxn], vis[maxn];
+vector<edge> b[maxn];
 priority_queue<node, vector<node>, greater<node>> q;
-void dijkstra(int n, int s)
+int vis[maxn], dis[maxn];
+inline void dijkstra(int n, int s)
 {
     for (int i = 1; i <= n; i++)
         dis[i] = 2147483647;
@@ -24,12 +24,12 @@ void dijkstra(int n, int s)
     {
         int u = q.top().u;
         q.pop();
-        if (vis[u])
+        if (vis[u] == 1)
             continue;
         vis[u] = 1;
-        for (auto ed : e[u])
+        for (auto i : b[u])
         {
-            int v = ed.v, w = ed.w;
+            int v = i.v, w = i.w;
             if (dis[v] > dis[u] + w)
             {
                 dis[v] = dis[u] + w;
@@ -45,7 +45,7 @@ int main()
     for (int i = 1; i <= m; i++)
     {
         scanf("%d%d%d", &u1, &v1, &w1);
-        e[u1].push_back({v1, w1});
+        b[u1].push_back({v1, w1});
     }
     dijkstra(n, s);
     for (int i = 1; i <= n; i++)

@@ -1,41 +1,41 @@
-#include <bits/stdc++.h>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <vector>
+#define maxn 500005
 using namespace std;
-int a[105][105], dp[105][105], zy[10] = {0, -1, 0, 1, 0};
-int sx[10] = {0, 0, -1, 0, 1},maxn=-999;
-int r, c;
-bool used[105][105];
-int dp1(int h, int l)
+vector<int> v[maxn], w[maxn];
+int fa[maxn][31], cost[maxn][31], dep[maxn];
+int n, m, b, c, s;
+struct gg
 {
-    if(used[h][l]==1)
-    return dp[h][l];
-    if(a[h+1][l]>a[h][l]&&a[h][l+1]>a[h][l]&&a[h-1][l]>a[h][l]&&a[h][l-1]>a[h][l])
-    return dp[h][l];
-    for (int i = 1; i <= 4; i++)
-    {
-        if (l + zy[i] >= 1 && l + zy[i] <= c && h + sx[i] >= 1 && h + sx[i] <= r && a[h + sx[i]][l + zy[i]] < a[h][l])
-            dp[h][l] = max(dp1(h + sx[i], l + zy[i])+1, dp[h][l]);
-    }
-    used[h][l]=1;
-    return dp[h][l];
+    vector<int> son, xd;
+} a[maxn];
+bool used[maxn];
+inline void build(int p)
+{
+    for (int i = 0; i < a[p].xd.size(); i++)
+        if (used[a[p].xd[i]] != 1)
+        {
+            a[p].son.push_back(a[p].xd[i]);
+            used[a[p].xd[i]] = 1;
+        }
+    for (int i = 0; i < a[p].son.size(); i++)
+        build(a[p].son[i]);
+}
+inline void dfs(int root,int from){
+       fa[root][0]=from;
+       dep[1];
 }
 int main()
 {
-    cin >> r >> c;
-    for (int i = 1; i <= r; i++)
-        a[i][0] = 999999;
-    for (int i = 1; i <= c; i++)
-        a[0][i] = 999999;
-    for (int i = 1; i <= c; i++)
-        a[r][i] = 999999;
-    for (int i = 1; i <= r; i++)
-        a[i][c] = 999999;
-    for (int i = 1; i <= r; i++)
-        for (int b = 1; b <= c; b++)
-            scanf("%d", &a[i][b]);
-    for (int i = 1; i <= r; i++)
-        for (int b = 1; b <= c; b++){
-        dp[i][b] = dp1(i, b);
-        maxn=max(maxn,dp[i][b]);    
-        }
-    cout<<maxn+1;
+    scanf("%d%d%d", &n, &m, &s);
+    for (int i = 1; i < n; i++)
+    {
+        scanf("%d%d", &b, &c);
+        a[b].xd.push_back(c);
+        a[c].xd.push_back(b);
+    }
+    build(s);
+    dfs(s,0);
 }
