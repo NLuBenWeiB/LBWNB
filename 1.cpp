@@ -1,49 +1,87 @@
+#include<iostream>
 #include<cstdio>
-int fa[300005];
-int n,k,ans;
-inline int read()
+#define MAXN 1000001
+#define ll long long
+using namespace std;
+unsigned ll n,m,a[MAXN],ans[MAXN<<2],tag[MAXN<<2];
+inline ll ls(ll x)
 {
-    int sum=0;
-    char ch=getchar();
-    while(ch>'9'||ch<'0') ch=getchar();
-    while(ch>='0'&&ch<='9') sum=sum*10+ch-48,ch=getchar();
-    return sum;
-}//读入优化
-int find(int x)
+    return x<<1;
+}
+inline ll rs(ll x)
 {
-    if(x!=fa[x]) fa[x]=find(fa[x]);
-    return fa[x];
-}//查询
-int unity(int x,int y)
+    return x<<1|1;
+}
+inline void push_up(ll p)
 {
-    int r1=find(fa[x]),r2=find(fa[y]);
-    fa[r1]=r2;
-}//合并
+    ans[p]=ans[ls(p)]+ans[rs(p)];
+}
+void build(ll p,ll l,ll r)
+{
+    tag[p]=0;
+    if(l==r){ans[p]=a[l];return ;}
+    ll mid=(l+r)>>1;
+    build(ls(p),l,mid);
+    build(rs(p),mid+1,r);
+    push_up(p);
+} 
+inline void f(ll p,ll l,ll r,ll k)
+{
+    tag[p]=tag[p]+k;
+    ans[p]=ans[p]+k*(r-l+1);
+}
+inline void push_down(ll p,ll l,ll r)
+{
+    ll mid=(l+r)>>1;
+    f(ls(p),l,mid,tag[p]);
+    f(rs(p),mid+1,r,tag[p]);
+    tag[p]=0;
+}
+inline void update(ll nl,ll nr,ll l,ll r,ll p,ll k)
+{
+    if(nl<=l&&r<=nr)
+    {
+        ans[p]+=k*(r-l+1);
+        tag[p]+=k;
+        return ;
+    }
+    push_down(p,l,r);
+    ll mid=(l+r)>>1;
+    if(nl<=mid)update(nl,nr,l,mid,ls(p),k);
+    if(nr>mid) update(nl,nr,mid+1,r,rs(p),k);
+    push_up(p);
+}
+ll query(ll q_x,ll q_y,ll l,ll r,ll p)
+{
+    ll res=0;
+    if(q_x<=l&&r<=q_y)return ans[p];
+    ll mid=(l+r)>>1;
+    push_down(p,l,r);
+    if(q_x<=mid)res+=query(q_x,q_y,l,mid,ls(p));
+    if(q_y>mid) res+=query(q_x,q_y,mid+1,r,rs(p));
+    return res;
+}
 int main()
 {
-    int x,y,z;
-    n=read(),k=read();
-    for(int i=1;i<=3*n;++i) fa[i]=i; //对于每种生物：设 x 为本身，x+n 为猎物，x+2*n 为天敌
-    for(int i=1;i<=k;++i) 
+    ll a1,b,c,d,e,f;
+    scan();
+    build(1,1,n);
+    while(m--)
     {
-        z=read(),x=read(),y=read();
-        if(x>n||y>n) {ans++; continue;} // 不属于该食物链显然为假
-        if(z==1)
+        scanf("%lld",&a1);
+        switch(a1)
         {
-            if(find(x+n)==find(y)||find(x+2*n)==find(y)) {ans++; continue;}
-            //如果1是2的天敌或猎物，显然为谎言
-            unity(x,y); unity(x+n,y+n); unity(x+2*n,y+2*n);
-            //如果为真，那么1的同类和2的同类，1的猎物是2的猎物，1的天敌是2的天敌
-        }
-        else if(z==2)
-        {
-            if(x==y) {ans++; continue;} //其实是废话但是可以稍微省点时间
-            if(find(x)==find(y)||find(x+2*n)==find(y)) {ans++; continue;}
-            //如果1是2的同类或猎物，显然为谎言
-            unity(x,y+2*n); unity(x+n,y); unity(x+2*n,y+n);
-            //如果为真，那么1的同类是2的天敌，1的猎物是2的同类，1的天敌是2的猎物
+            case 1:{
+                scanf("%lld%lld%lld",&b,&c,&d);
+                update(b,c,1,n,1,d);
+                break;
+            }
+            case 2:{
+                scanf("%lld%lld",&e,&f);
+                printf("%lld\n",query(e,f,1,n,1));
+                break;
+            }
         }
     }
-    printf("%d\n",ans);
     return 0;
 }
