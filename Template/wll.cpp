@@ -1,78 +1,79 @@
 #include <bits/stdc++.h>
 using namespace std;
-const int maxn = 2000005;
-struct gg
+#define re register
+#define ll long long
+struct edge
 {
-    int to, cap, rew;
+    ll to, cap, rew;
 };
-vector<gg> g[205];
-int dep[maxn],iter[maxn];
-inline void bfs(int s)
+vector<edge> a[1205];
+ll dep[1205], iter[1205];
+inline void bfs(re ll s)
 {
     memset(dep, -1, sizeof(dep));
-    queue<int> que;
+    queue<ll> que;
     dep[s] = 0;
     que.push(s);
     while (!que.empty())
     {
-        int v = que.front();
+        re ll now = que.front();
         que.pop();
-        for (int i = 0; i < g[v].size(); i++)
+        for (re ll i = 0; i < a[now].size(); i++)
         {
-            gg &e = g[v][i];
-            if(e.cap>0&&dep[e.to]<0){
-                dep[e.to]=dep[v]+1;
+            edge &e = a[now][i];
+            if (e.cap > 0 && dep[e.to] < 0)
+            {
+                dep[e.to] = dep[now] + 1;
                 que.push(e.to);
             }
         }
     }
 }
-inline void add(int from, int to, int cap)
-{
-    g[from].push_back((gg){to, cap, g[to].size()});
-    g[to].push_back((gg){from, 0, g[from].size() - 1});
-}
-inline int dfs(int s, int t, int f)
+inline ll dfs(re ll s,re ll t,re ll f)
 {
     if (s == t)
         return f;
-    for (int i = iter[s]; i < g[s].size(); i++)
+    for (ll &i = iter[s]; i < a[s].size(); i++)
     {
-        gg &k = g[s][i];
-        if (k.cap > 0&&dep[s]<dep[k.to])
+        edge &q = a[s][i];
+        if (q.cap > 0 && dep[q.to] > dep[s])
         {
-            int d = dfs(k.to, t, min(f, k.cap));
+            ll d = dfs(q.to, t, min(f, q.cap));
             if (d > 0)
             {
-                k.cap -= d;
-                g[k.to][k.rew].cap += d;
+                q.cap -= d;
+                a[q.to][q.rew].cap += d;
                 return d;
             }
         }
     }
     return 0;
 }
-int maxa(int s, int t)
+inline ll maxdd(re ll s,re ll t)
 {
-    int flow = 0;
+    re ll flow = 0;
     for (;;)
     {
         bfs(s);
+        if (dep[t] < 0)
+            return flow;
         memset(iter, 0, sizeof(iter));
-        int f;
-        while(f=dfs(s,t,9999999)>0)
-        flow+=f;
+        re ll f;
+        while ((f = dfs(s, t, 2147483647)) > 0)
+        {
+            flow += f;
+        }
     }
-    return flow;
 }
 int main()
 {
-    int n, m, s, t, fr, too, w;
-    scanf("%d%d%d%d", &n, &m, &s, &t);
-    for (int i = 1; i <= m; i++)
+    re ll n, m, s, t, fr, to, ca;
+    scanf("%lld%lld%lld%lld", &n, &m, &s, &t);
+    for (re ll i = 1; i <= m; i++)
     {
-        scanf("%d%d%d", &fr, &too, &w);
-        add(fr, too, w);
+        scanf("%lld%lld%lld", &fr, &to, &ca);
+        a[fr].push_back((edge){to, ca, a[to].size()});
+        a[to].push_back((edge){fr, 0, a[fr].size()-1});
     }
-    cout << maxa(s, t);
+    printf("%lld", maxdd(s, t));
 }
