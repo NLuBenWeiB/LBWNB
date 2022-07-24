@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 const int maxn = 20005;
-int a[maxn], ansn = 99999999;
+int a[maxn], ansn = 99999999, ys = 0;
 inline int dfs(int s, int t, int ans)
 {
     if (s == t)
@@ -13,17 +13,31 @@ inline int dfs(int s, int t, int ans)
 }
 int main()
 {
-    freopen("jump.in","r",stdin);
-    freopen("jump.out","w",stdout);
+    // freopen("jump.in", "r", stdin);
+    // freopen("jump.out", "w", stdout);
     int n, q, start, over, sc;
     scanf("%d%d", &n, &q);
     for (int i = 1; i < n; i++)
-        scanf("%d", &a[i]);
-    for (int i = 1; i <= q; i++)
     {
-        ansn=99999999;
-        scanf("%d%d%d", &start, &over, &sc);
-        dfs(start, over, 0);
-        cout <<ansn<< endl;
+        scanf("%d", &a[i]);
+        if (a[i] < n - i)
+        {
+            ys = 1;
+        }
     }
+    if (ys != 1)
+    {
+        for (int i = 1; i <= q; i++){
+        scanf("%d%d%d", &start, &over, &sc);
+        cout << 1 << endl;    
+        }
+    }
+    else
+        for (int i = 1; i <= q; i++)
+        {
+            ansn = 99999999;
+            scanf("%d%d%d", &start, &over, &sc);
+            dfs(start, over, 0);
+            cout << ansn << endl;
+        }
 }

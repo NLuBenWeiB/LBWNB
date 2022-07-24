@@ -81,8 +81,8 @@ int main()
         for (int y = 1; y <= ynum; y++)
         {
             cin >> drink;
-            a[i + f + n].push_back((edge){drink + f + n + i, 1, a[i + f + n + drink].size()});
-            a[i + f + n + drink].push_back((edge){i + f + n, 0, a[i + f + n].size() - 1});
+            a[i + f + n].push_back((edge){f + n + n + drink, 1, a[f + n + n + drink].size()});
+            a[f + n + n + drink].push_back((edge){i + f + n, 0, a[i + f + n].size() - 1});
         }
     }
     for (int p = 1; p <= f; p++)
@@ -92,15 +92,8 @@ int main()
     }
     for (int p = 1; p <= d; p++)
     {
-        a[p + n + n + f].push_back((edge){n + d + f + n + 1, 1, a[n + d + f + n + 1].size()});
-        a[n + d + f + n + 1].push_back((edge){p + n + n + f, 0, a[p + n + n + f].size() - 1});
+        a[p + n + n + f].push_back((edge){n + n + f + d + 1, 1, a[n + n + f + d + 1].size()});
+        a[n + n + f + d + 1].push_back((edge){p + n + n + f, 0, a[p + n + n + f].size() - 1});
     }
-    cout << endl;
-    for (int i = 0; i <= n + n + f + d + 1; i++)
-    {
-        for (int op = 0; op < a[i].size(); op++)
-            cout << a[i][op].to << " ";
-        cout << endl;
-    }
-    // cout<<maxdd(0,n + n + f + d + 1);
+    cout<<maxdd(0,n + n + f + d + 1);
 }
