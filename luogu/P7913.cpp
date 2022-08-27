@@ -1,100 +1,57 @@
 #include <bits/stdc++.h>
 using namespace std;
-const int maxn = 100005;
-int read()
-{
-    int x = 0, f = 1;
-    char c = getchar();
-    while (c < '0' || c > '9')
-    {
-        if (c == '-')
-            f = -1;
-        c = getchar();
-    }
-    while (c >= '0' && c <= '9')
-    {
-        x = x * 10 + c - '0';
-        c = getchar();
-    }
-    return x * f;
-}
+const int maxn = 200005;
+typedef pair<int, int> pii;
 struct gg
 {
-    int arrive, leave;
+    int x, y;
 } a[maxn], b[maxn];
-priority_queue<int, vector<int>, greater<int>> l;
-inline bool cmp(gg p, gg q)
+int res1[maxn], res2[maxn];
+int n;
+bool cmp(gg a, gg b)
 {
-    return p.arrive < q.arrive;
+    return a.x < b.x;
 }
-inline int findn(int n, int m1, int ans)
+inline void calc(gg *t, int m, int *res)
 {
-    if (n == 0)
-        return 0;
-    for (int i = 1; i <= m1; i++)
+    priority_queue<pii, vector<pii>, greater<pii>> lq;
+    priority_queue<int, vector<int>, greater<int>> wq;
+    for (int i = 1; i <= n; i++)
+        wq.push(i);
+    for (int i = 1; i <= m; i++)
     {
-        if (!l.empty() && a[i].arrive > l.top())
+        while (!lq.empty() && t[i].x >= lq.top().first)
         {
-            n++;
-            l.pop();
+            wq.push(lq.top().second);
+            lq.pop();
         }
-        if (n > 0)
-        {
-            l.push(a[i].leave);
-            ans++;
-            n--;
-        }
+        if (wq.empty())
+            continue;
+        int dest = wq.top();
+        wq.pop();
+        res[dest]++;
+        lq.push(make_pair(t[i].y, dest));
     }
-    return ans;
-}
-inline int findw(int n, int m2, int ans)
-{
-    if (n == 0)
-        return 0;
-    for (int i = 1; i <= m2; i++)
-    {
-        if (!l.empty() && b[i].arrive > l.top())
-        {
-            n++;
-            l.pop();
-        }
-        if (n > 0)
-        {
-            l.push(b[i].leave);
-            ans++;
-            n--;
-        }
-    }
-    return ans;
+    for (int i = 1; i <= n; i++)
+        res[i] += res[i - 1];
 }
 int main()
 {
-    register int n, m1, m2, ans = 0, answer = 0;
-    n = read();
-    m1 = read();
-    m2 = read();
+    int m1, m2;
+    scanf("%d%d%d", &n, &m1, &m2);
     for (int i = 1; i <= m1; i++)
-    {
-        a[i].arrive = read();
-        a[i].leave = read();
-    }
+        scanf("%d%d", &a[i].x, &a[i].y);
     for (int i = 1; i <= m2; i++)
-    {
-        b[i].arrive = read();
-        b[i].leave = read();
-    }
+        scanf("%d%d", &b[i].x, &b[i].y);
     sort(a + 1, a + 1 + m1, cmp);
     sort(b + 1, b + 1 + m2, cmp);
+    calc(a, m1, res1);
+    calc(b, m2, res2);
+    int ans = 0;
     for (int i = 0; i <= n; i++)
     {
-        ans = 0;
-        ans += findn(i, m1, 0);
-        while (!l.empty())
-            l.pop();
-        ans += findw(n - i, m2, 0);
-        while (!l.empty())
-            l.pop();
-        answer = max(ans, answer);
+        ans = max(ans, res1[i] + res2[n - i]);
     }
-    printf("%d", answer);
+    cout << ans << endl;
+    return 0;
 }
